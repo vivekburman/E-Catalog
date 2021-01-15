@@ -1,0 +1,31 @@
+.ec-landing-page {
+    background-color: #2e335e;
+    @keyframes scaleUp {
+        0% {
+            transform: scale(0.5);
+        }
+        100% {
+            transform: scale(1.0);
+        }
+    }
+    & .ec-logo {
+        object-fit: fill;
+        width: 325px;
+        animation-name: scaleUp;
+        animation-duration: 1s;
+        animation-timing-function: ease-out;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+    }
+
+    @media (min-width: 576px) {
+        @keyframes scaleUp {
+            0% {
+                transform: scale(0.5);
+            }
+            100% {
+                transform: scale(1.4);
+            }
+        }
+    }
+}

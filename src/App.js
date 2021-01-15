@@ -1,9 +1,9 @@
-import logo from './logo.svg';
-import './App.css';
+import ECatalog from './components/app.component/app';
 
 function App() {
   return (
-    <div className="App">
+    <div className="app">
+      <ECatalog />
     </div>
   );
 }
