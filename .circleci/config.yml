@@ -1,14 +1,20 @@
 version: 2.1
 orbs:
   accelq-connect: accelq/accelq-connect@1.0.0
-workflows:
-  welcome:
-    jobs:
+jobs:
+  testjob:
+    docker:
+      - image: "cimg/node:lts"
+    steps:
       - accelq-connect/accelq-ci:
           agent-name: "POC"
           job-id: "340897"
-          password: $password
+          password: "asdasdasd"
           project-name: "Vivek Qbank"
           tenant: "demotenant"
           url: "https://poc.accelq.io"
           user: "vivekop@yopmail.com"
+workflows:
+    integration-test_deploy:
+      jobs:
+        - testjob
