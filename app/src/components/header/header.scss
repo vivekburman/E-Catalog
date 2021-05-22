@@ -1,0 +1,14 @@
+.ec-header-wrapper {
+    & .ec-header-container {
+        padding: 16px;
+        box-shadow: 0 0 2px 1px #1616161c;
+    }
+}
+@media (min-width: 768px) {
+    .ec-header-wrapper {
+        & .ec-header-container {
+            box-shadow: none;
+            border-bottom: 1px solid #1616161c;
+        }
+    }
+}

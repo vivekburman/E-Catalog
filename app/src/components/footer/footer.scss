@@ -1,0 +1,20 @@
+.ec-footer-wrapper {
+    & .ec-footer-mobile-container {
+        z-index: 1000;
+        bottom: 0;
+        box-shadow: 0 0 3px 0px #00000040;
+    }
+    & .ec-footer-item {
+        padding: 5px 16px;
+    } 
+    & .ec-footer-link {
+        font-size: 14px;
+    }
+}
+@media (min-width: 768px) {
+    .ec-footer-wrapper {
+        & .ec-footer-mobile-wrapper {
+            display: none;
+        }
+    }
+}
