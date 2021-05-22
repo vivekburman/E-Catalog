@@ -2,7 +2,7 @@ import React from 'react';
 import Root from './root/index';
 function App() {
   return (
-    <div className="App">
+    <div className="app">
       <Root />
     </div>
   );

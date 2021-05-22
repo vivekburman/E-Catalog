@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import Footer from '../footer/footer';
+import Header from '../header/header';
+import ProductCollection from '../productcollection/productcollection';
 class Home extends Component {
     render () {
         return (
-            <div>
-                Home
+            <div className="ec-home-wrapper">
+                <Header />
+                <ProductCollection />
+                <Footer />
             </div>
         ); 
     }

@@ -1,0 +1,23 @@
+.ec-explore-wrapper {
+    display: none;
+    & .ec-explore-item {
+        padding: 4px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        &:hover {
+            background-color: rgba(230, 230, 230, 0.61);
+        }
+        &:active {
+            border-color: rgb(230, 230, 230);
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .ec-explore-wrapper { 
+        display: initial;
+        & .ec-explore-container {
+            margin-right: 45px;
+        }
+    }
+}

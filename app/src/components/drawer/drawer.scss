@@ -1,0 +1,12 @@
+.ec-drawer-wrapper {
+    & .ec-drawer-icon {
+        width: 30px;
+        background: transparent;
+        border: 2px solid transparent;
+    } 
+    & .ec-drawer-line {
+        height: 4px;
+        border-radius: 2px;
+        background-color: #000;
+    }
+}
