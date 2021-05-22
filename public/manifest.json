@@ -2,7 +2,7 @@
   "name": "Vivek Jewellers",
   "short_name": "VJ",
   "theme_color": "#494d72",
-  "background_color": "red",
+  "background_color": "#494d72",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
