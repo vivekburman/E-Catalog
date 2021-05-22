@@ -6,6 +6,8 @@ import Diamond from '../../images/diamond.svg';
 import DiamondActive from '../../images/diamond_active.svg';
 import Heart from '../../images/heart.svg';
 import HeartActive from '../../images/heart_active.svg';
+import LetterActive from '../../images/letter_active.svg';
+import Letter from '../../images/letter.svg';
 import './footer.scss';
 
 const Footer = () => {
@@ -22,11 +24,15 @@ const Footer = () => {
             case "wishlist":
                 setWishList(true);
                 break;
+            case "contact":
+                setContact(true);
+                break;
         }
     });
     const [home, setHome] = useState(true);
     const [explore, setExplore] = useState(false);
     const [wishlist, setWishList] = useState(false);
+    const [contact, setContact] = useState(false);
 
     return (
         <footer className="ec-footer-wrapper">
@@ -37,21 +43,28 @@ const Footer = () => {
                             <Link to="/home"
                             className="ec-no-style ec-display-flex ec-direction-column ec-align-items-center">
                                 <img src={home ? HomeActive : Home} alt="home" className="ec-action-icon"/>
-                                <span className="ec-footerlink">Home</span>
+                                <span className="ec-footer-link">Home</span>
                             </Link>
                         </div>
                         <div className="ec-footer-item">
                             <Link to="/explore"
                             className="ec-no-style ec-display-flex ec-direction-column ec-align-items-center">
                                 <img src={explore ? DiamondActive : Diamond} alt="home" className="ec-action-icon"/>
-                                <span>Explore</span>
+                                <span className="ec-footer-link">Explore</span>
                             </Link>
                         </div>
                         <div className="ec-footer-item">
                             <Link to="/wishlist"
                             className="ec-no-style ec-display-flex ec-direction-column ec-align-items-center">
                                 <img src={wishlist ? HeartActive : Heart} alt="home" className="ec-action-icon"/>
-                                <span>WishList</span>
+                                <span className="ec-footer-link">WishList</span>
+                            </Link>
+                        </div>
+                        <div className="ec-footer-item">
+                            <Link to="/contact"
+                            className="ec-no-style ec-display-flex ec-direction-column ec-align-items-center">
+                                <img src={contact ? LetterActive : Letter} alt="home" className="ec-action-icon"/>
+                                <span className="ec-footer-link">Contact</span>
                             </Link>
                         </div>
                     </div>
