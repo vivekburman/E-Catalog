@@ -28,7 +28,7 @@ const Footer = () => {
                 setContact(true);
                 break;
         }
-    });
+    }, [history.location.pathname]);
     const [home, setHome] = useState(true);
     const [explore, setExplore] = useState(false);
     const [wishlist, setWishList] = useState(false);
