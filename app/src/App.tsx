@@ -1,9 +1,9 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React from 'react';
+import Root from './root/index';
 function App() {
   return (
     <div className="App">
+      <Root />
     </div>
   );
 }
