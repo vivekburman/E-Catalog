@@ -1,0 +1,13 @@
+.ec-collection-wrapper {
+    & .ec-item-title {
+        font-size: 26px;
+        font-family: "Roboto", sans-serif;
+        color: #222222;
+        font-weight: 500;
+        margin: 0;
+        line-height: 1.2;
+    }
+    & .ec-collection-items-wrapper {
+        margin: 30px 0;
+    }
+}

@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500&display=swap');
 @import './scss/module.scss';
 .ec-display-flex {
     display: flex;
     &.ec-wrap {
         flex-wrap: wrap;
+    }
+    &.ec-no-wrap {
+        flex-wrap: nowrap;
     }
     &.ec-direction-row {
         flex-direction: row;
@@ -16,8 +20,14 @@
     &.ec-justify-content-spacebetween {
         justify-content: space-between;
     }
+    &.ec-justify-content-center {
+        justify-content: center;
+    }
     &.ec-align-items-center {
         align-items: center;
+    }
+    & .ec-align-self-center {
+        align-self: center;
     }
     & .ec-flex-grow {
         flex-grow: 1;
@@ -33,7 +43,11 @@
     display: inherit;
 }
 .ec-display-inlineflex {
+    @extend .ec-display-flex;
     display: inline-flex;
+}
+.ec-display-none {
+    display: none;
 }
 .ec-cursor-pointer {
     cursor: pointer;
@@ -55,6 +69,9 @@
 }
 .ec-text-align-right {
     text-align: right;
+}
+.ec-text-align-center {
+    text-align: center;
 }
 .ec-float-right {
     float: right;
@@ -98,7 +115,18 @@
 .ec-padding-right-15 {
     padding-right: 15px;
 }
-
+.ec-visibility-hidden {
+    visibility: hidden;
+}
+.ec-overflow-hidden {
+    overflow: hidden;
+}
+.ec-overflow-x-hidden {
+    overflow-x: hidden;
+}
+.ec-overflow-y-hidden {
+    overflow-y: hidden;
+}
 
 
 
@@ -106,6 +134,9 @@ html, body, #root, .app{
     height: 100%;
     margin: 0;
     padding: 0;
+}
+.app {
+    overflow-x: hidden;
 }
 ul.ec-no-style {
     list-style-type: none;
@@ -120,4 +151,8 @@ a.ec-no-style {
     width: 22px;
     height: 22px;
     border: 2px solid transparent;
+}
+
+.ec-left-transform {
+    transform: rotateZ(180deg);
 }

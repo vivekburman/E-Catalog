@@ -1,0 +1,14 @@
+.ec-home-wrapper {
+    & .ec-home-loader-wrapper {
+        z-index: 1000;
+        top: 0;
+        left: 0;
+    }
+    & .ec-home-loader-container {
+        background-color: #fff;
+    }
+    & .ec-home-loading-img {
+        width: auto;
+        height: auto;
+    }
+}

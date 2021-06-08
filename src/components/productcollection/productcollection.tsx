@@ -4,10 +4,10 @@ import './productcollection.scss';
 
 const ProductCollection = () => {
     return(
-        <div className="ec-product-collection-wrapper ec-full-height">
+        <main className="ec-product-collection-wrapper ec-full-height">
             <Banner />
             <Collection />
-        </div>
+        </main>
     );
 }
 export default ProductCollection;

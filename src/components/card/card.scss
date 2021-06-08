@@ -1,0 +1,26 @@
+.ec-card-wrapper {
+    & .ec-card-container {
+        width: calc(100vw / 8);
+    }
+}
+@media (min-width: 564px) {
+    .ec-card-wrapper {
+        & .ec-card-container {
+            width: calc(100vw / 5);
+        }
+    }  
+}
+@media (min-width: 768px) {
+    .ec-card-wrapper {
+        & .ec-card-container {
+            width: calc(100vw / 6);
+        }
+    }
+}
+@media (min-width: 920px) {
+    .ec-card-wrapper {
+        & .ec-card-container {
+            width: calc(100vw / 7);
+        }
+    }
+}
