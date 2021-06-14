@@ -40,9 +40,31 @@ class Slider extends Component<SliderProps, SliderState> {
                 let childrenToBeShown = firstItemWidth === undefined ? 0 : Math.floor(rootWidth / firstItemWidth);
                 Array.from(rootRef.children).forEach((el, index) => {
                     const _index = index + 1;
-                    if (this.state.currentOffset < _index && _index <= this.state.currentOffset + childrenToBeShown) {
+                    if (this.state.currentOffset < _index
+                        && _index <= this.state.currentOffset + childrenToBeShown) {
                         el.classList.remove("ec-visibility-hidden");
-                    } else {
+                    } 
+                    else if (this.state.movementDirection == DIRECTION.FORWARD && index == this.state.currentOffset - 1
+                        || this.state.movementDirection == DIRECTION.BACKWARD && index == this.state.currentOffset + childrenToBeShown) {
+                        // const animationEvent = el.animate([
+                        //     {
+                        //         width: `${el.getBoundingClientRect().width}px`,
+                        //     }, 
+                        //     {
+                        //         width: '0px',
+                        //     }],
+                        //     {
+                        //         duration: 1000,
+                        //         easing: "ease",
+                        //         fill: "forwards",
+                        //         iterations: 1,
+                        //     });
+                        // animationEvent.onfinish = () => {
+                        //     el.classList.add("ec-display-none");
+                        // };
+                        el.classList.remove("ec-visibility-hidden");
+                    }
+                    else {
                         el.classList.add("ec-visibility-hidden");
                     }
                 });
@@ -66,6 +88,9 @@ class Slider extends Component<SliderProps, SliderState> {
 
 
     debouncePositionUpdate = () => {
+        this.setState({
+            movementDirection: null
+        });
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
             this.positionElements();
@@ -113,13 +138,15 @@ class Slider extends Component<SliderProps, SliderState> {
     }
     render() {
         return (
-            <div className="ec-slider-wrapper ec-position-relative">
+            <div className="ec-slider-wrapper ec-position-relative ec-display-flex ec-justify-content-center">
                 <div className="ec-slider-container">
-                    <div className="ec-slider-cardlist-wrapper ec-display-flex"
-                        ref={this.rootRef}>
-                    {
-                        this.getCardsList()
-                    }
+                    <div className="ec-slider-cardlist-wrapper ec-overflow-hidden">
+                        <div className="ec-slider-cardlist-container ec-display-flex"
+                            ref={this.rootRef}>
+                        {
+                            this.getCardsList()
+                        }
+                        </div>    
                     </div>
                     <div className="ec-slide-wrapper ec-left ec-position-absolute ec-full-height ec-display-flex ec-align-items-center">
                         {
