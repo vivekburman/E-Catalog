@@ -3,7 +3,10 @@ import Card from "../card/card";
 import './slider.scss';
 import Arrow from '../../images/arrow.svg';
 
-interface SliderProps{}
+interface SliderProps{
+    getCard: Function,
+    id: string
+}
 interface SliderState{
     currentOffset: number,
     movementDirection: number | null
@@ -18,10 +21,9 @@ const ITEMS_TO_SHOW = {
     450: 2,
     800: 3,
     992: 4,
-    993: 5
 };
 
-
+const GUTTER_H = 40;
 class Slider extends Component<SliderProps, SliderState> {
     rootRef: RefObject<HTMLDivElement>;
     firstItemRef: RefObject<HTMLDivElement>;
@@ -59,17 +61,15 @@ class Slider extends Component<SliderProps, SliderState> {
                 } 
                 else if (windowWidth < 800) {
                     childrenToBeShown = ITEMS_TO_SHOW[800];
-                } 
-                else if (windowWidth < 992) {
-                    childrenToBeShown = ITEMS_TO_SHOW[992];
                 } else {
-                    childrenToBeShown = ITEMS_TO_SHOW[993];
+                    childrenToBeShown = ITEMS_TO_SHOW[992];
                 }
                 const itemWidth = rootWidth / childrenToBeShown;
                 Array.from(rootRef.children).forEach((el, index: number) => {
                     const _index = index + 1;
                     const _el = el as HTMLElement
                     _el.style.width = `${itemWidth}px`;
+                    _el.style.height = `${itemWidth + GUTTER_H}px`;
                     if ((this.state.currentOffset < _index
                         && _index <= this.state.currentOffset + childrenToBeShown)
                         || (this.state.movementDirection === DIRECTION.FORWARD && index === this.state.currentOffset - 1)
@@ -121,9 +121,6 @@ class Slider extends Component<SliderProps, SliderState> {
             this.rootRef.current.addEventListener('touchstart', this.onTouchStart);
             this.rootRef.current.addEventListener('touchmove', this.onTouchMove);
         }
-        // 1. add touch event listener store inital X, Y pos
-        // 2. on touch move find if its right or left
-        // 3. on touch end reset
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.debouncePositionUpdate);
@@ -145,7 +142,7 @@ class Slider extends Component<SliderProps, SliderState> {
                 <div className="ec-item-wrapper ec-display-inlineblock ec-visibility-hidden" 
                 ref={i === 0 ? this.firstItemRef : null}
                 key={i}>
-                    {i}<Card />
+                    {this.props.getCard(this.props.id)}
                 </div>
             );
         }
