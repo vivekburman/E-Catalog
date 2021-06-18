@@ -5,9 +5,6 @@
     &.ec-wrap {
         flex-wrap: wrap;
     }
-    &.ec-no-wrap {
-        flex-wrap: nowrap;
-    }
     &.ec-direction-row {
         flex-direction: row;
     }
@@ -108,6 +105,15 @@
 }
 .ec-margin-right-10 {
     margin-right: 10px;
+}
+.ec-margin-right-15 {
+    margin-right: 15px;
+}
+.ec-margin-left-10 {
+    margin-left: 10px;
+}
+.ec-margin-left-15 {
+    margin-left: 15px;
 }
 .ec-no-padding {
     padding: 0;

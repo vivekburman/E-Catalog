@@ -13,10 +13,22 @@ const DIRECTION = {
     BACKWARD: 2
 }; 
 
+const ITEMS_TO_SHOW = {
+    300: 1,
+    450: 2,
+    800: 3,
+    992: 4,
+    993: 5
+};
+
+
 class Slider extends Component<SliderProps, SliderState> {
     rootRef: RefObject<HTMLDivElement>;
     firstItemRef: RefObject<HTMLDivElement>;
-    timer!: NodeJS.Timeout;
+    windowResizeTimer!: NodeJS.Timeout;
+    swipeTimer!: NodeJS.Timeout;
+    touchStartX: number | null;
+    touchStartY: number | null;
     constructor(props: SliderProps) {
         super(props);
         this.rootRef = createRef<HTMLDivElement>();
@@ -25,6 +37,8 @@ class Slider extends Component<SliderProps, SliderState> {
             currentOffset: 0,
             movementDirection: null
         };
+        this.touchStartX = null;
+        this.touchStartY = null;
     }
     positionElements = () => {
         // 1. get rootref width
@@ -33,76 +47,91 @@ class Slider extends Component<SliderProps, SliderState> {
         // 4. Only show those elements rest all hidden
         if (this.rootRef.current) {
             const rootRef = this.rootRef.current;
-            const firstItemRef = this.firstItemRef.current;
             requestAnimationFrame(() => {
+                const windowWidth = window.innerWidth;
                 const rootWidth = rootRef.offsetWidth;
-                const firstItemWidth = firstItemRef?.offsetWidth;
-                let childrenToBeShown = firstItemWidth === undefined ? 0 : Math.floor(rootWidth / firstItemWidth);
-                Array.from(rootRef.children).forEach((el, index) => {
+                let childrenToBeShown = 0;
+                if (windowWidth < 300) {
+                    childrenToBeShown = ITEMS_TO_SHOW[300];
+                } 
+                else if (windowWidth < 450) {
+                    childrenToBeShown = ITEMS_TO_SHOW[450];
+                } 
+                else if (windowWidth < 800) {
+                    childrenToBeShown = ITEMS_TO_SHOW[800];
+                } 
+                else if (windowWidth < 992) {
+                    childrenToBeShown = ITEMS_TO_SHOW[992];
+                } else {
+                    childrenToBeShown = ITEMS_TO_SHOW[993];
+                }
+                const itemWidth = rootWidth / childrenToBeShown;
+                Array.from(rootRef.children).forEach((el, index: number) => {
                     const _index = index + 1;
-                    if (this.state.currentOffset < _index
-                        && _index <= this.state.currentOffset + childrenToBeShown) {
-                        el.classList.remove("ec-visibility-hidden");
+                    const _el = el as HTMLElement
+                    _el.style.width = `${itemWidth}px`;
+                    if ((this.state.currentOffset < _index
+                        && _index <= this.state.currentOffset + childrenToBeShown)
+                        || (this.state.movementDirection === DIRECTION.FORWARD && index === this.state.currentOffset - 1)
+                        || (this.state.movementDirection === DIRECTION.BACKWARD && index === this.state.currentOffset + childrenToBeShown)) {
+                        _el.classList.remove("ec-visibility-hidden");
                     } 
-                    else if (this.state.movementDirection == DIRECTION.FORWARD && index == this.state.currentOffset - 1
-                        || this.state.movementDirection == DIRECTION.BACKWARD && index == this.state.currentOffset + childrenToBeShown) {
-                        // const animationEvent = el.animate([
-                        //     {
-                        //         width: `${el.getBoundingClientRect().width}px`,
-                        //     }, 
-                        //     {
-                        //         width: '0px',
-                        //     }],
-                        //     {
-                        //         duration: 1000,
-                        //         easing: "ease",
-                        //         fill: "forwards",
-                        //         iterations: 1,
-                        //     });
-                        // animationEvent.onfinish = () => {
-                        //     el.classList.add("ec-display-none");
-                        // };
-                        el.classList.remove("ec-visibility-hidden");
-                    }
                     else {
-                        el.classList.add("ec-visibility-hidden");
+                        _el.classList.add("ec-visibility-hidden");
                     }
                 });
                 //  root ref animation
-                if (this.state.movementDirection == DIRECTION.FORWARD) {
-                    rootRef.style.transform = `translateX(${-(firstItemWidth || 0) + 
-                        this.getTranslateValue(rootRef.style.transform)}px)`;
-                } else if (this.state.movementDirection == DIRECTION.BACKWARD) {
-                    rootRef.style.transform = `translateX(${(firstItemWidth || 0) + this.getTranslateValue(rootRef.style.transform)}px)`;
-                }
+                rootRef.style.transform = `translateX(${-(itemWidth || 0) * this.state.currentOffset}px)`;
             });
         }
     }
 
-    getTranslateValue = (transform: String) => {
-        if (transform.length) {
-            return Number.parseFloat(transform.split("(")[1].split(")")[0]);
-        }
-        return 0;
-    }
-
-
     debouncePositionUpdate = () => {
-        this.setState({
-            movementDirection: null
-        });
-        clearTimeout(this.timer);
-        this.timer = setTimeout(() => {
+        clearTimeout(this.windowResizeTimer);
+        this.windowResizeTimer = setTimeout(() => {
             this.positionElements();
         }, 1000);
     }
-
+    onTouchStart = (event: any) => {
+        console.log('touchstart');
+        this.touchStartX = event.touches[0].clientX;
+        this.touchStartY = event.touches[0].clientY;
+    }
+    onTouchMove = (event: any) => {
+        clearTimeout(this.swipeTimer);
+        this.swipeTimer = setTimeout(() => {
+            if (!this.touchStartX || !this.touchStartY) {
+                return;
+            }
+            const touchX = event.touches[0].clientX;
+            const touchY = event.touches[0].clientY;
+            const xDiff = this.touchStartX - touchX;
+            const yDiff = this.touchStartY - touchY;
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                xDiff > 0 ? this.onNext() : this.onPrev();
+            }
+            this.touchStartX = null;
+            this.touchStartY = null;
+        }, 100);
+    }
     componentDidMount() {
         this.positionElements();
         window.addEventListener('resize', this.debouncePositionUpdate);
+        if (this.rootRef.current) {
+            this.rootRef.current.addEventListener('touchstart', this.onTouchStart);
+            this.rootRef.current.addEventListener('touchmove', this.onTouchMove);
+        }
+        // 1. add touch event listener store inital X, Y pos
+        // 2. on touch move find if its right or left
+        // 3. on touch end reset
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.debouncePositionUpdate);
+        // remove event listeneers
+        if (this.rootRef.current) {
+            this.rootRef.current.removeEventListener('touchstart', this.onTouchStart);
+            this.rootRef.current.removeEventListener('touchmove', this.onTouchMove);
+        }
     }
 
     componentDidUpdate() {
@@ -123,14 +152,12 @@ class Slider extends Component<SliderProps, SliderState> {
         return result;
     }
     onPrev = () => {
-        // 
         this.setState({
             currentOffset: Math.max(0, this.state.currentOffset - 1),
             movementDirection: DIRECTION.BACKWARD
         });
     }
     onNext = () => {
-        //
         this.setState({
             currentOffset: Math.min(17, this.state.currentOffset + 1),
             movementDirection: DIRECTION.FORWARD
@@ -138,8 +165,8 @@ class Slider extends Component<SliderProps, SliderState> {
     }
     render() {
         return (
-            <div className="ec-slider-wrapper ec-position-relative ec-display-flex ec-justify-content-center">
-                <div className="ec-slider-container">
+            <div className="ec-slider-wrapper ec-display-flex ec-justify-content-center">
+                <div className="ec-slider-container ec-full-width ec-position-relative">
                     <div className="ec-slider-cardlist-wrapper ec-overflow-hidden">
                         <div className="ec-slider-cardlist-container ec-display-flex"
                             ref={this.rootRef}>
