@@ -5,7 +5,8 @@ import Arrow from '../../images/arrow.svg';
 
 interface SliderProps{
     getCard: Function,
-    id: string
+    id: string,
+    size: number
 }
 interface SliderState{
     currentOffset: number,
@@ -31,10 +32,12 @@ class Slider extends Component<SliderProps, SliderState> {
     swipeTimer!: NodeJS.Timeout;
     touchStartX: number | null;
     touchStartY: number | null;
+    nextBtnRef: RefObject<HTMLDivElement>;
     constructor(props: SliderProps) {
         super(props);
         this.rootRef = createRef<HTMLDivElement>();
         this.firstItemRef = createRef<HTMLDivElement>();
+        this.nextBtnRef = createRef<HTMLDivElement>();
         this.state = {
             currentOffset: 0,
             movementDirection: null
@@ -52,6 +55,7 @@ class Slider extends Component<SliderProps, SliderState> {
             requestAnimationFrame(() => {
                 const windowWidth = window.innerWidth;
                 const rootWidth = rootRef.offsetWidth;
+                let hasReachedEnd = false;
                 let childrenToBeShown = 0;
                 if (windowWidth < 300) {
                     childrenToBeShown = ITEMS_TO_SHOW[300];
@@ -65,20 +69,23 @@ class Slider extends Component<SliderProps, SliderState> {
                     childrenToBeShown = ITEMS_TO_SHOW[992];
                 }
                 const itemWidth = rootWidth / childrenToBeShown;
-                Array.from(rootRef.children).forEach((el, index: number) => {
+                Array.from(rootRef.children).forEach((el, index: number, arr: Element[]) => {
                     const _index = index + 1;
                     const _el = el as HTMLElement
                     _el.style.width = `${itemWidth}px`;
                     _el.style.height = `${itemWidth + GUTTER_H}px`;
                     if ((this.state.currentOffset < _index
-                        && _index <= this.state.currentOffset + childrenToBeShown)
-                        || (this.state.movementDirection === DIRECTION.FORWARD && index === this.state.currentOffset - 1)
+                        && _index <= this.state.currentOffset + childrenToBeShown)) {
+                        _el.classList.remove("ec-visibility-hidden");
+                        hasReachedEnd = _index == arr.length;
+                    } else if ((this.state.movementDirection === DIRECTION.FORWARD && index === this.state.currentOffset - 1)
                         || (this.state.movementDirection === DIRECTION.BACKWARD && index === this.state.currentOffset + childrenToBeShown)) {
                         _el.classList.remove("ec-visibility-hidden");
-                    } 
+                    }
                     else {
                         _el.classList.add("ec-visibility-hidden");
                     }
+                    hasReachedEnd ? this.nextBtnRef.current?.classList.add('ec-visibility-hidden') : this.nextBtnRef.current?.classList.remove('ec-visibility-hidden');
                 });
                 //  root ref animation
                 rootRef.style.transform = `translateX(${-(itemWidth || 0) * this.state.currentOffset}px)`;
@@ -137,12 +144,12 @@ class Slider extends Component<SliderProps, SliderState> {
 
     getCardsList = () => {
         const result = [];
-        for (let i = 0; i<20; i++) {
+        for (let i = 0; i <this.props.size; i++) {
             result.push(
                 <div className="ec-item-wrapper ec-display-inlineblock ec-visibility-hidden" 
                 ref={i === 0 ? this.firstItemRef : null}
                 key={i}>
-                    {this.props.getCard(this.props.id)}
+                    {this.props.getCard(this.props.id, i)}
                 </div>
             );
         }
@@ -156,7 +163,7 @@ class Slider extends Component<SliderProps, SliderState> {
     }
     onNext = () => {
         this.setState({
-            currentOffset: Math.min(17, this.state.currentOffset + 1),
+            currentOffset: Math.min(this.props.size - 2, this.state.currentOffset + 1),
             movementDirection: DIRECTION.FORWARD
         });
     }
@@ -184,9 +191,9 @@ class Slider extends Component<SliderProps, SliderState> {
                     </div>
                     <div className="ec-slide-wrapper ec-right ec-position-absolute ec-full-height ec-display-flex ec-align-items-center">
                         {
-                            this.state.currentOffset !== 17 &&
                             <figure className="ec-arrow-wrapper ec-no-margin ec-cursor-pointer"
-                            onClick={this.onNext}>
+                            onClick={this.onNext}
+                            ref={this.nextBtnRef}>
                                 <img className="ec-full-width ec-full-height" alt="right arrow" 
                                     src={Arrow}/>
                             </figure>
